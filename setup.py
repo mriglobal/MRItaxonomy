@@ -2,11 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="MRItaxonomy",
-    version="0.1.0",
+    version="0.1.1",
     packages=find_packages(),
     install_requires=['pandas>=0.19.0',
                       'biopython>=1.7',
-                      'wget>=3.2'],
+                      'wget>=3.2',
+                      'marisa_trie>=1.1.0'],
     author="MRIGlobal Bioinformatics Team",
     author_email="biofx@mriglobal.org",
     keywords="mriglobal taxonomy ncbi",
