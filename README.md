@@ -4,7 +4,7 @@ A compendium of convenient taxonomic related operations interfacing with NCBI
 
 ### installation
 ```
-pip install MRItaxonomy==0.1.0
+pip install MRItaxonomy
 ```
 
 ### import the whole module, or sub-modules
@@ -38,7 +38,7 @@ NCBI_fetch.update()
 contains a method that loads the accession-to-taxid mapping data object, and a function that reports the associated taxid for the passed accession
 ```
 from MRItaxonomy import accession2taxid
-accession2taxid.load_dataframe()    # note: does not have to be called. will automatically be applied the first time get_taxid() is run
+accession2taxid.load_trie()    # note: does not have to be called. will automatically be applied the first time get_taxid() is run
 accession2taxid.get_taxid(accession)
 ```
 
