@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-import argparse as ap
 import time
 import site
 import logging
@@ -83,3 +82,4 @@ def get_merge(tid):
             return 0
     else:
         return tid
+

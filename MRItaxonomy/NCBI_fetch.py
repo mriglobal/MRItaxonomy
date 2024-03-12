@@ -1,11 +1,42 @@
 import os
 import wget
 import site
+import pandas as pd
+import numpy as np
+import marisa_trie
 
 #functions called by commands at command line
 
-def initialize():
+def build_trie(directory):
+    print('Building accession2taxid trie datafiles...')
+    chunk_size = 50000
+    trie_keys = []
+    tax_ids = []
+    for chunk in pd.read_csv('{0}/dumps/nucl_gb.accession2taxid'.format(directory), sep='\t', usecols=[1, 2], chunksize=chunk_size, header=0):
+        #print(chunk)
+        #print(chunk.iloc[:,1].astype(int).tolist())
+        #assert(False)
+        if all(isinstance(item, int) for item in chunk.iloc[:,1].astype(int).tolist()):
+            trie_keys.extend(chunk.iloc[:,0].astype(str).tolist())
+            tax_ids.extend(chunk.iloc[:,1].astype(int).tolist())
+            print("Taxids completed: ",len(tax_ids))
+        else:
+            print(chunk)
+            print(chunk.iloc[:,1].astype(int).tolist())
+            #chunk[2] = pd.to_numeric(chunk[2], errors='coerce')
+            #filtered_chunk = chunk.dropna(subset=[2])
+            #trie_keys.extend(chunk[1].astype(str).tolist())
+            #tax_ids.extend(chunk[2].tolist())
+            print("Taxids done post clean :",len(tax_ids))
     
+    trie = marisa_trie.Trie(trie_keys)
+    trie_indices = [trie[k] for k in trie_keys]
+    ordered_tax_ids = [x for _, x in sorted(zip(trie_indices, tax_ids))]
+    tax_ids_array = np.array(ordered_tax_ids, dtype=np.int32)
+    np.save('{0}/dumps/ordered_tax_ids.npy'.format(directory), tax_ids_array)
+    trie.save('{0}/dumps/accession_trie.marisa'.format(directory))
+
+def initialize():
     site_packages = site.getsitepackages()[0]
     for root, dirs, files in os.walk(site_packages):
         if "MRItaxonomy" in dirs:
@@ -38,6 +69,8 @@ def initialize():
     os.system('gunzip {0}/dumps/nucl_gb.accession2taxid.gz'.format(directory))
     os.system('gunzip {0}/dumps/prot.accession2taxid.gz'.format(directory))
     os.system('tar -C {0}/dumps -xzf {0}/dumps/new_taxdump.tar.gz'.format(directory))
+    build_trie(directory)
+
     
 def update():
     print('Updating all databases')
@@ -68,6 +101,7 @@ def update():
         #os.rename('nucl_gb.accession2taxid.gz', '{0}/dumps/nucl_gb.accession2taxid.gz'.format(directory))
         os.subprocess('gunzip {0}/dumps/nucl_gb.accession2taxid.gz'.format(directory))
         print('\nUpdated accession2taxid dump files downloaded to {0}/dumps.'.format(directory))
+        build_trie(directory)
 
 
 

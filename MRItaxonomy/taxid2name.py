@@ -57,6 +57,6 @@ def get_merge(tid):
 	    return tid
 	
 def get_name(tax):
-    TAXID2NAME_df, = load_dataframe()
+    TAXID2NAME_df, _ = load_dataframe()
     tax = get_merge(tax)
     return TAXID2NAME_df.loc[tax]['name']
