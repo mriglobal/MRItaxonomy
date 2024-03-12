@@ -19,15 +19,16 @@ def build_trie(directory):
         if all(isinstance(item, int) for item in chunk.iloc[:,1].astype(int).tolist()):
             trie_keys.extend(chunk.iloc[:,0].astype(str).tolist())
             tax_ids.extend(chunk.iloc[:,1].astype(int).tolist())
-            print("Taxids completed: ",len(tax_ids))
+            #print("Taxids completed: ",len(tax_ids))
         else:
-            print(chunk)
-            print(chunk.iloc[:,1].astype(int).tolist())
+            #print(chunk)
+            #print(chunk.iloc[:,1].astype(int).tolist())
             #chunk[2] = pd.to_numeric(chunk[2], errors='coerce')
             #filtered_chunk = chunk.dropna(subset=[2])
             #trie_keys.extend(chunk[1].astype(str).tolist())
             #tax_ids.extend(chunk[2].tolist())
-            print("Taxids done post clean :",len(tax_ids))
+            #print("Taxids done post clean :",len(tax_ids))
+            continue
     
     trie = marisa_trie.Trie(trie_keys)
     trie_indices = [trie[k] for k in trie_keys]
