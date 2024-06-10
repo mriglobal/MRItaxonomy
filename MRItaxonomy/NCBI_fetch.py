@@ -100,7 +100,7 @@ def update():
     else: #you got work to do
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz', out='{0}/dumps/nucl_gb.accession2taxid.gz'.format(directory))
         #os.rename('nucl_gb.accession2taxid.gz', '{0}/dumps/nucl_gb.accession2taxid.gz'.format(directory))
-        os.subprocess('gunzip {0}/dumps/nucl_gb.accession2taxid.gz'.format(directory))
+        os.system('gunzip {0}/dumps/nucl_gb.accession2taxid.gz'.format(directory))
         print('\nUpdated accession2taxid dump files downloaded to {0}/dumps.'.format(directory))
         build_trie(directory)
 
