@@ -67,8 +67,8 @@ def initialize():
     #os.rename('new_taxdump.tar.gz', '{0}/dumps/new_taxdump.tar.gz'.format(directory))
     #os.rename('new_taxdump.tar.gz.md5', '{0}/dumps/new_taxdump.tar.gz.md5'.format(directory))
     #could replace these with the gzip and tarfile modules, but they return file and tarfile objects, so this os.subprocess is cleaner. Change this if portability becomes an issue
-    os.system('gunzip {0}/dumps/nucl_gb.accession2taxid.gz'.format(directory))
-    os.system('gunzip {0}/dumps/prot.accession2taxid.gz'.format(directory))
+    os.system('gunzip -c {0}/dumps/nucl_gb.accession2taxid.gz > {0}/dumps/nucl_gb.accession2taxid'.format(directory))
+    os.system('gunzip -c {0}/dumps/prot.accession2taxid.gz > {0}/dumps/prot.accession2taxid'.format(directory))
     os.system('tar -C {0}/dumps -xzf {0}/dumps/new_taxdump.tar.gz'.format(directory))
     build_trie(directory)
 
