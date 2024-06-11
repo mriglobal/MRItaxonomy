@@ -5,6 +5,8 @@ import pandas as pd
 import numpy as np
 import marisa_trie
 import subprocess
+import shutil
+import gzip
 
 #functions called by commands at command line
 
@@ -67,19 +69,12 @@ def initialize():
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz.md5', out=f'{directory}/dumps/prot.accession2taxid.gz.md5')
     print(f'\nAccession2taxid dump files downloaded to {directory}/dumps.')
     #could replace these with the gzip and tarfile modules, but they return file and tarfile objects, so this os.subprocess is cleaner. Change this if portability becomes an issue
-    #os.system('gunzip -c {0}/dumps/nucl_gb.accession2taxid.gz > {0}/dumps/nucl_gb.accession2taxid')
-    #os.system('gunzip -c {0}/dumps/prot.accession2taxid.gz > {0}/dumps/prot.accession2taxid')
-    #os.system('tar -C {0}/dumps -xzf {0}/dumps/new_taxdump.tar.gz')
-    gunzip_cmd = f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz'
-    with open(f'{directory}/dumps/nucl_gb.accession2taxid.gz', 'w') as file:
-        subprocess.run(gunzip_cmd.split(), stdout=file)
-        
-    gunzip_cmd = f'gunzip -c {directory}/dumps/prot.accession2taxid.gz'
-    with open(f'{directory}/dumps/prot.accession2taxid.gz', 'w') as file:
-        subprocess.run(gunzip_cmd.split(), stdout=file)
-        
-    tar_cmd = f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz'
-    subprocess.run(tar_cmd.split())
+    #os.system(f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz > {directory}/dumps/nucl_gb.accession2taxid')
+    subprocess.run(f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz > {directory}/dumps/nucl_gb.accession2taxid', shell=True, text=True, capture_output=True)
+    #os.system(f'gunzip -c {directory}/dumps/prot.accession2taxid.gz > {directory}/dumps/prot.accession2taxid')
+    subprocess.run(f'gunzip -c {directory}/dumps/prot.accession2taxid.gz > {directory}/dumps/prot.accession2taxid', shell=True, text=True, capture_output=True)
+    #os.system(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz')
+    subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz', shell=True, text=True, capture_output=True)
     build_trie(directory)
 
     
@@ -96,9 +91,8 @@ def update():
     if not os.path.exists(f'{directory}/dumps'):
         os.makedirs(f'{directory}/dumps') #make sure this is here
 
-    #os.system('md5sum {0}/dumps/nucl_gb.accession2taxid.gz | cut -d\  -f1 > {0}/dumps/old.md5') #generate md5sum and push to file. Python doesn't have an elegant way to make md5s or compare them
-    command = f'md5sum {directory}/dumps/nucl_gb.accession2taxid.gz | cut -d " " -f1 > {directory}/dumps/old.md5'
-    subprocess.run(command, shell=True, check=True)
+    #os.system(f'md5sum {directory}/dumps/nucl_gb.accession2taxid.gz | cut -d\  -f1 > {directory}/dumps/old.md5') #generate md5sum and push to file. Python doesn't have an elegant way to make md5s or compare them
+    subprocess.run(f'md5sum {directory}/dumps/nucl_gb.accession2taxid.gz | cut -d\  -f1 > {directory}/dumps/old.md5', shell=True, text=True, capture_output=True)
     with open(f'{directory}/dumps/old.md5') as f:
         old5 = f.readlines()[0].strip('\n') #get the md5 of the existing file
     os.remove(f'{directory}/dumps/old.md5') #remove temp file
@@ -119,17 +113,14 @@ def update():
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz', out=f'{directory}/dumps/nucl_gb.accession2taxid.gz')
         #os.rename('nucl_gb.accession2taxid.gz', '{0}/dumps/nucl_gb.accession2taxid.gz')
         
-        #os.system('gunzip {0}/dumps/nucl_gb.accession2taxid.gz')
-        file_path = f'{directory}/dumps/nucl_gb.accession2taxid.gz'
-        command = ['gunzip', file_path]
-        subprocess.run(command, check=True)
+        #os.system(f'gunzip {directory}/dumps/nucl_gb.accession2taxid.gz')
+        subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz',shell=True, text=True, capture_output=True)
         print(f'\nUpdated accession2taxid dump files downloaded to {directory}/dumps.')
         build_trie(directory)
 
 
-    #os.system('md5sum {0}/dumps/new_taxdump.tar.gz | cut -d\  -f1 > {0}/dumps/old.md5') #generate md5sum and push to file. Python doesn't have an elegant way to make md5s or compare them
-    command = f'md5sum {directory}/dumps/new_taxdump.tar.gz | cut -d " " -f1 > {directory}/dumps/old.md5'
-    subprocess.run(command, shell=True, check=True)
+    #os.system(f'md5sum {directory}/dumps/new_taxdump.tar.gz | cut -d\  -f1 > {directory}/dumps/old.md5') #generate md5sum and push to file. Python doesn't have an elegant way to make md5s or compare them
+    subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz',shell=True, text=True, capture_output=True)
     with open(f'{directory}/dumps/old.md5') as f:
         old5 = f.readlines()[0].strip('\n') #get the md5 of the existing file
     os.remove(f'{directory}/dumps/old.md5') #remove temp file
@@ -148,8 +139,8 @@ def update():
             os.remove(f'{directory}/dumps/new_taxdump.tar.gz')
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz', out=f'{directory}/dumps/new_taxdump.tar.gz')
         #os.rename('new_taxdump.tar.gz', '{0}/dumps/new_taxdump.tar.gz')
-        tar_cmd = f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz'
-        subprocess.run(tar_cmd.split())
+        #os.system(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz')
+        subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz', shell=True, text=True, capture_output=True)
         print(f'\nUpdated taxonomy dump files downloaded to {directory}/dumps.')
 
 
