@@ -123,7 +123,7 @@ def update():
 
 
     #os.system(f'md5sum {directory}/dumps/new_taxdump.tar.gz | cut -d\  -f1 > {directory}/dumps/old.md5') #generate md5sum and push to file. Python doesn't have an elegant way to make md5s or compare them
-    subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz',shell=True, text=True, capture_output=True)
+    subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz | cut -d\  -f1 > {directory}/dumps/old.md5',shell=True, text=True, capture_output=True)
     with open(f'{directory}/dumps/old.md5') as f:
         old5 = f.readlines()[0].strip('\n') #get the md5 of the existing file
     os.remove(f'{directory}/dumps/old.md5') #remove temp file
@@ -145,6 +145,40 @@ def update():
         #os.system(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz')
         subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz', shell=True, text=True, capture_output=True)
         print(f'\nUpdated taxonomy dump files downloaded to {directory}/dumps.')
+
+
+
+
+
+
+
+    subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/prot.accession2taxid.gz | cut -d\  -f1 > {directory}/dumps/old.md5',shell=True, text=True, capture_output=True)
+    with open(f'{directory}/dumps/old.md5') as f:
+        old5 = f.readlines()[0].strip('\n') #get the md5 of the existing file
+    os.remove(f'{directory}/dumps/old.md5') #remove temp file
+
+    if os.path.exists(f'{directory}/dumps/prot.accession2taxid.gz.md5'):
+        os.remove(f'{directory}/dumps/prot.accession2taxid.gz.md5')
+
+    wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz.md5', out=f'{directory}/dumps/prot.accession2taxid.gz.md5')
+    with open(f'{directory}/dumps/prot.accession2taxid.gz.md5') as f: #open it and pull the md5 hash from the file
+        new5 = f.readlines()[0].split(' ')[0] #because it also contains the filename
+    if new5 == old5: #compare
+        print('\nThe prot accession2taxid dump files are up to date.\n') #you're done. Congratulations on being up to date
+    else:
+        if os.path.exists(f'{directory}/dumps/new_taxdump.tar.gz'):
+            os.remove(f'{directory}/dumps/new_taxdump.tar.gz')
+        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz', out=f'{directory}/dumps/prot.accession2taxid.gz')
+        subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz', shell=True, text=True, capture_output=True)
+        print('\nUpdated prot accession2taxid dump files')
+        
+
+
+
+
+
+
+
 
 
 
