@@ -71,11 +71,11 @@ def initialize():
     #os.system('gunzip -c {0}/dumps/prot.accession2taxid.gz > {0}/dumps/prot.accession2taxid')
     #os.system('tar -C {0}/dumps -xzf {0}/dumps/new_taxdump.tar.gz')
     gunzip_cmd = f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz'
-    with open(f'{directory}/dumps/nucl_gb.accession2taxid', 'w') as file:
+    with open(f'{directory}/dumps/nucl_gb.accession2taxid.gz', 'w') as file:
         subprocess.run(gunzip_cmd.split(), stdout=file)
         
     gunzip_cmd = f'gunzip -c {directory}/dumps/prot.accession2taxid.gz'
-    with open(f'{directory}/dumps/prot.accession2taxid', 'w') as file:
+    with open(f'{directory}/dumps/prot.accession2taxid.gz', 'w') as file:
         subprocess.run(gunzip_cmd.split(), stdout=file)
         
     tar_cmd = f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz'
