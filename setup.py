@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="MRItaxonomy",
-    version="1.0.7",
+    version="1.0.8",
     packages=find_packages(),
     install_requires=['pandas>=0.19.0',
                       'biopython>=1.7',

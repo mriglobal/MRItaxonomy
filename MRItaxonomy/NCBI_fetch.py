@@ -15,7 +15,7 @@ def build_trie(directory):
     chunk_size = 50000
     trie_keys = []
     tax_ids = []
-    for chunk in pd.read_csv('{directory}/dumps/nucl_gb.accession2taxid', sep='\t', usecols=[1, 2], chunksize=chunk_size, header=0):
+    for chunk in pd.read_csv(f'{directory}/dumps/nucl_gb.accession2taxid', sep='\t', usecols=[1, 2], chunksize=chunk_size, header=0):
         #print(chunk)
         #print(chunk.iloc[:,1].astype(int).tolist())
         #assert(False)
@@ -70,10 +70,13 @@ def initialize():
     print(f'\nAccession2taxid dump files downloaded to {directory}/dumps.')
     #could replace these with the gzip and tarfile modules, but they return file and tarfile objects, so this os.subprocess is cleaner. Change this if portability becomes an issue
     #os.system(f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz > {directory}/dumps/nucl_gb.accession2taxid')
+    print('Unzipping nucl_gb.accession2taxid.gz')
     subprocess.run(f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz > {directory}/dumps/nucl_gb.accession2taxid', shell=True, text=True, capture_output=True)
     #os.system(f'gunzip -c {directory}/dumps/prot.accession2taxid.gz > {directory}/dumps/prot.accession2taxid')
+    print('Unzipping prot.accession2taxid.gz')
     subprocess.run(f'gunzip -c {directory}/dumps/prot.accession2taxid.gz > {directory}/dumps/prot.accession2taxid', shell=True, text=True, capture_output=True)
     #os.system(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz')
+    print('Untarring new_taxdump.tar.gz')
     subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz', shell=True, text=True, capture_output=True)
     build_trie(directory)
 
