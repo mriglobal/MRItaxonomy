@@ -35,8 +35,8 @@ def build_trie(directory):
     trie_indices = [trie[k] for k in trie_keys]
     ordered_tax_ids = [x for _, x in sorted(zip(trie_indices, tax_ids))]
     tax_ids_array = np.array(ordered_tax_ids, dtype=np.int32)
-    np.save('{directory}/dumps/ordered_tax_ids.npy', tax_ids_array)
-    trie.save('{directory}/dumps/accession_trie.marisa')
+    np.save(f'{directory}/dumps/ordered_tax_ids.npy', tax_ids_array)
+    trie.save(f'{directory}/dumps/accession_trie.marisa')
 
 def initialize():
     site_packages = site.getsitepackages()[0]
@@ -48,24 +48,24 @@ def initialize():
             print("Bad installation location")
             raise SystemExit
 
-    if not os.path.exists('{directory}/dumps'):
-        os.makedirs('{directory}/dumps') #make sure this is here
+    if not os.path.exists(f'{directory}/dumps'):
+        os.makedirs(f'{directory}/dumps') #make sure this is here
 
     print('Initializing...')
-    if not os.path.exists('{directory}/dumps/new_taxdump.tar.gz.md5'):
-        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz.md5', out='{directory}/dumps/new_taxdump.tar.gz.md5')
-    if not os.path.exists('{directory}/dumps/new_taxdump.tar.gz'):
-        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz', out='{directory}/dumps/new_taxdump.tar.gz')
-    print('\nTaxonomy dump files downloaded to {directory}/dumps.')
-    if not os.path.exists('{directory}/dumps/nucl_gb.accession2taxid.gz'):
-        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz', out='{directory}/dumps/nucl_gb.accession2taxid.gz')
-    if not os.path.exists('{directory}/dumps/nucl_gb.accession2taxid.gz.md5'):
-        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz.md5', out='{directory}/dumps/nucl_gb.accession2taxid.gz.md5')
-    if not os.path.exists('{directory}/dumps/prot.accession2taxid.gz'):
-        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz', out='{directory}/dumps/prot.accession2taxid.gz')
-    if not os.path.exists('{directory}/dumps/prot.accession2taxid.gz.md5'):
-        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz.md5', out='{directory}/dumps/prot.accession2taxid.gz.md5')
-    print('\nAccession2taxid dump files downloaded to {directory}/dumps.')
+    if not os.path.exists(f'{directory}/dumps/new_taxdump.tar.gz.md5'):
+        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz.md5', out=f'{directory}/dumps/new_taxdump.tar.gz.md5')
+    if not os.path.exists(f'{directory}/dumps/new_taxdump.tar.gz'):
+        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz', out=f'{directory}/dumps/new_taxdump.tar.gz')
+    print(f'\nTaxonomy dump files downloaded to {directory}/dumps.')
+    if not os.path.exists(f'{directory}/dumps/nucl_gb.accession2taxid.gz'):
+        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz', out=f'{directory}/dumps/nucl_gb.accession2taxid.gz')
+    if not os.path.exists(f'{directory}/dumps/nucl_gb.accession2taxid.gz.md5'):
+        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz.md5', out=f'{directory}/dumps/nucl_gb.accession2taxid.gz.md5')
+    if not os.path.exists(f'{directory}/dumps/prot.accession2taxid.gz'):
+        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz', out=f'{directory}/dumps/prot.accession2taxid.gz')
+    if not os.path.exists(f'{directory}/dumps/prot.accession2taxid.gz.md5'):
+        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz.md5', out=f'{directory}/dumps/prot.accession2taxid.gz.md5')
+    print(f'\nAccession2taxid dump files downloaded to {directory}/dumps.')
     #could replace these with the gzip and tarfile modules, but they return file and tarfile objects, so this os.subprocess is cleaner. Change this if portability becomes an issue
     #os.system('gunzip -c {0}/dumps/nucl_gb.accession2taxid.gz > {0}/dumps/nucl_gb.accession2taxid')
     #os.system('gunzip -c {0}/dumps/prot.accession2taxid.gz > {0}/dumps/prot.accession2taxid')
@@ -93,64 +93,64 @@ def update():
         else:
             print("Bad installation location")
             raise SystemExit
-    if not os.path.exists('{directory}/dumps'):
-        os.makedirs('{directory}/dumps') #make sure this is here
+    if not os.path.exists(f'{directory}/dumps'):
+        os.makedirs(f'{directory}/dumps') #make sure this is here
 
     #os.system('md5sum {0}/dumps/nucl_gb.accession2taxid.gz | cut -d\  -f1 > {0}/dumps/old.md5') #generate md5sum and push to file. Python doesn't have an elegant way to make md5s or compare them
     command = f'md5sum {directory}/dumps/nucl_gb.accession2taxid.gz | cut -d " " -f1 > {directory}/dumps/old.md5'
     subprocess.run(command, shell=True, check=True)
-    with open('{directory}/dumps/old.md5') as f:
+    with open(f'{directory}/dumps/old.md5') as f:
         old5 = f.readlines()[0].strip('\n') #get the md5 of the existing file
-    os.remove('{directory}/dumps/old.md5') #remove temp file
+    os.remove(f'{directory}/dumps/old.md5') #remove temp file
     
     if os.path.exists('{directory}/dumps/nucl_gb.accession2taxid.gz.md5'):
         os.remove('{directory}/dumps/nucl_gb.accession2taxid.gz.md5')
         
-    wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz.md5', out='{directory}/dumps/nucl_gb.accession2taxid.gz.md5') #download md5 for comparison to existing file
+    wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz.md5', out=f'{directory}/dumps/nucl_gb.accession2taxid.gz.md5') #download md5 for comparison to existing file
     #os.rename('nucl_gb.accession2taxid.gz.md5', '{0}/dumps/nucl_gb.accession2taxid.gz.md5') #move it
-    with open('{directory}/dumps/nucl_gb.accession2taxid.gz.md5') as f: #open it and pull the md5 hash from the file
+    with open(f'{directory}/dumps/nucl_gb.accession2taxid.gz.md5') as f: #open it and pull the md5 hash from the file
         new5 = f.readlines()[0].split(' ')[0] #because it also contains the filename
     if new5 == old5: #compare
         print('\nThe accession dump files are up to date.\n') #you're done. Congratulations on being up to date
 
     else: #you got work to do
-        if os.path.exists('{directory}/dumps/nucl_gb.accession2taxid.gz'):
-            os.remove('{directory}/dumps/nucl_gb.accession2taxid.gz')
-        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz', out='{directory}/dumps/nucl_gb.accession2taxid.gz')
+        if os.path.exists(f'{directory}/dumps/nucl_gb.accession2taxid.gz'):
+            os.remove(f'{directory}/dumps/nucl_gb.accession2taxid.gz')
+        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz', out=f'{directory}/dumps/nucl_gb.accession2taxid.gz')
         #os.rename('nucl_gb.accession2taxid.gz', '{0}/dumps/nucl_gb.accession2taxid.gz')
         
         #os.system('gunzip {0}/dumps/nucl_gb.accession2taxid.gz')
         file_path = f'{directory}/dumps/nucl_gb.accession2taxid.gz'
         command = ['gunzip', file_path]
         subprocess.run(command, check=True)
-        print('\nUpdated accession2taxid dump files downloaded to {directory}/dumps.')
+        print(f'\nUpdated accession2taxid dump files downloaded to {directory}/dumps.')
         build_trie(directory)
 
 
     #os.system('md5sum {0}/dumps/new_taxdump.tar.gz | cut -d\  -f1 > {0}/dumps/old.md5') #generate md5sum and push to file. Python doesn't have an elegant way to make md5s or compare them
     command = f'md5sum {directory}/dumps/new_taxdump.tar.gz | cut -d " " -f1 > {directory}/dumps/old.md5'
     subprocess.run(command, shell=True, check=True)
-    with open('{directory}/dumps/old.md5') as f:
+    with open(f'{directory}/dumps/old.md5') as f:
         old5 = f.readlines()[0].strip('\n') #get the md5 of the existing file
-    os.remove('{directory}/dumps/old.md5') #remove temp file
+    os.remove(f'{directory}/dumps/old.md5') #remove temp file
     
-    if os.path.exists('{directory}/dumps/new_taxdump.tar.gz.md5'):
-        os.remove('{directory}/dumps/new_taxdump.tar.gz.md5')
+    if os.path.exists(f'{directory}/dumps/new_taxdump.tar.gz.md5'):
+        os.remove(f'{directory}/dumps/new_taxdump.tar.gz.md5')
         
-    wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz.md5', out='{directory}/dumps/new_taxdump.tar.gz.md5')
+    wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz.md5', out=f'{directory}/dumps/new_taxdump.tar.gz.md5')
     #os.rename('new_taxdump.tar.gz.md5', '{0}/dumps/new_taxdump.tar.gz.md5')
-    with open('{directory}/dumps/new_taxdump.tar.gz.md5') as f: #open it and pull the md5 hash from the file
+    with open(f'{directory}/dumps/new_taxdump.tar.gz.md5') as f: #open it and pull the md5 hash from the file
         new5 = f.readlines()[0].split(' ')[0] #because it also contains the filename
     if new5 == old5: #compare
         print('\nThe taxonomy dump files are up to date.\n') #you're done. Congratulations on being up to date
     else:
-        if os.path.exists('{directory}/dumps/new_taxdump.tar.gz'):
-            os.remove('{directory}/dumps/new_taxdump.tar.gz')
-        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz', out='{directory}/dumps/new_taxdump.tar.gz')
+        if os.path.exists(f'{directory}/dumps/new_taxdump.tar.gz'):
+            os.remove(f'{directory}/dumps/new_taxdump.tar.gz')
+        wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz', out=f'{directory}/dumps/new_taxdump.tar.gz')
         #os.rename('new_taxdump.tar.gz', '{0}/dumps/new_taxdump.tar.gz')
         tar_cmd = f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz'
         subprocess.run(tar_cmd.split())
-        print('\nUpdated taxonomy dump files downloaded to {directory}/dumps.')
+        print(f'\nUpdated taxonomy dump files downloaded to {directory}/dumps.')
 
 
 
