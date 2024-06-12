@@ -100,8 +100,8 @@ def update():
         old5 = f.readlines()[0].strip('\n') #get the md5 of the existing file
     os.remove(f'{directory}/dumps/old.md5') #remove temp file
     
-    if os.path.exists('{directory}/dumps/nucl_gb.accession2taxid.gz.md5'):
-        os.remove('{directory}/dumps/nucl_gb.accession2taxid.gz.md5')
+    if os.path.exists(f'{directory}/dumps/nucl_gb.accession2taxid.gz.md5'):
+        os.remove(f'{directory}/dumps/nucl_gb.accession2taxid.gz.md5')
         
     wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz.md5', out=f'{directory}/dumps/nucl_gb.accession2taxid.gz.md5') #download md5 for comparison to existing file
     #os.rename('nucl_gb.accession2taxid.gz.md5', '{0}/dumps/nucl_gb.accession2taxid.gz.md5') #move it
@@ -117,13 +117,13 @@ def update():
         #os.rename('nucl_gb.accession2taxid.gz', '{0}/dumps/nucl_gb.accession2taxid.gz')
         
         #os.system(f'gunzip {directory}/dumps/nucl_gb.accession2taxid.gz')
-        subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz',shell=True, text=True, capture_output=True)
-        print(f'\nUpdated accession2taxid dump files downloaded to {directory}/dumps.')
+        subprocess.run(f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz > {directory}/dumps/nucl_gb.accession2taxid', shell=True, text=True, capture_output=True)
+        print(f'\nUpdated accession2taxid dump files downloaded to {directory}/dumps.\n')
         build_trie(directory)
 
 
     #os.system(f'md5sum {directory}/dumps/new_taxdump.tar.gz | cut -d\  -f1 > {directory}/dumps/old.md5') #generate md5sum and push to file. Python doesn't have an elegant way to make md5s or compare them
-    subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz | cut -d\  -f1 > {directory}/dumps/old.md5',shell=True, text=True, capture_output=True)
+    subprocess.run(f'md5sum {directory}/dumps/new_taxdump.tar.gz | cut -d\  -f1 > {directory}/dumps/old.md5',shell=True, text=True, capture_output=True)
     with open(f'{directory}/dumps/old.md5') as f:
         old5 = f.readlines()[0].strip('\n') #get the md5 of the existing file
     os.remove(f'{directory}/dumps/old.md5') #remove temp file
@@ -147,12 +147,7 @@ def update():
         print(f'\nUpdated taxonomy dump files downloaded to {directory}/dumps.')
 
 
-
-
-
-
-
-    subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/prot.accession2taxid.gz | cut -d\  -f1 > {directory}/dumps/old.md5',shell=True, text=True, capture_output=True)
+    subprocess.run(f'md5sum {directory}/dumps/prot.accession2taxid.gz | cut -d\  -f1 > {directory}/dumps/old.md5',shell=True, text=True, capture_output=True)
     with open(f'{directory}/dumps/old.md5') as f:
         old5 = f.readlines()[0].strip('\n') #get the md5 of the existing file
     os.remove(f'{directory}/dumps/old.md5') #remove temp file
@@ -166,10 +161,10 @@ def update():
     if new5 == old5: #compare
         print('\nThe prot accession2taxid dump files are up to date.\n') #you're done. Congratulations on being up to date
     else:
-        if os.path.exists(f'{directory}/dumps/new_taxdump.tar.gz'):
-            os.remove(f'{directory}/dumps/new_taxdump.tar.gz')
+        if os.path.exists(f'{directory}/dumps/prot.accession2taxid.gz'):
+            os.remove(f'{directory}/dumps/prot.accession2taxid.gz')
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz', out=f'{directory}/dumps/prot.accession2taxid.gz')
-        subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz', shell=True, text=True, capture_output=True)
+        subprocess.run(f'gunzip -c {directory}/dumps/prot.accession2taxid.gz > {directory}/dumps/prot.accession2taxid', shell=True, text=True, capture_output=True)
         print('\nUpdated prot accession2taxid dump files')
         
 
