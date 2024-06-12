@@ -5,8 +5,6 @@ import pandas as pd
 import numpy as np
 import marisa_trie
 import subprocess
-import shutil
-import gzip
 
 #functions called by commands at command line
 
