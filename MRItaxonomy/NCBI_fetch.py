@@ -56,27 +56,27 @@ def initialize():
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz.md5', out=f'{directory}/dumps/new_taxdump.tar.gz.md5')
     if not os.path.exists(f'{directory}/dumps/new_taxdump.tar.gz'):
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/new_taxdump/new_taxdump.tar.gz', out=f'{directory}/dumps/new_taxdump.tar.gz')
+        print('Untarring new_taxdump.tar.gz')
+        subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz', shell=True, text=True, capture_output=True)
     print(f'\nTaxonomy dump files downloaded to {directory}/dumps.')
     if not os.path.exists(f'{directory}/dumps/nucl_gb.accession2taxid.gz'):
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz', out=f'{directory}/dumps/nucl_gb.accession2taxid.gz')
+        print('Unzipping nucl_gb.accession2taxid.gz')
+        subprocess.run(f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz > {directory}/dumps/nucl_gb.accession2taxid', shell=True, text=True, capture_output=True)
+        build_trie(directory)
     if not os.path.exists(f'{directory}/dumps/nucl_gb.accession2taxid.gz.md5'):
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/nucl_gb.accession2taxid.gz.md5', out=f'{directory}/dumps/nucl_gb.accession2taxid.gz.md5')
     if not os.path.exists(f'{directory}/dumps/prot.accession2taxid.gz'):
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz', out=f'{directory}/dumps/prot.accession2taxid.gz')
+        print('Unzipping prot.accession2taxid.gz')
+        subprocess.run(f'gunzip -c {directory}/dumps/prot.accession2taxid.gz > {directory}/dumps/prot.accession2taxid', shell=True, text=True, capture_output=True)
     if not os.path.exists(f'{directory}/dumps/prot.accession2taxid.gz.md5'):
         wget.download('https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz.md5', out=f'{directory}/dumps/prot.accession2taxid.gz.md5')
     print(f'\nAccession2taxid dump files downloaded to {directory}/dumps.')
     #could replace these with the gzip and tarfile modules, but they return file and tarfile objects, so this os.subprocess is cleaner. Change this if portability becomes an issue
     #os.system(f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz > {directory}/dumps/nucl_gb.accession2taxid')
-    print('Unzipping nucl_gb.accession2taxid.gz')
-    subprocess.run(f'gunzip -c {directory}/dumps/nucl_gb.accession2taxid.gz > {directory}/dumps/nucl_gb.accession2taxid', shell=True, text=True, capture_output=True)
     #os.system(f'gunzip -c {directory}/dumps/prot.accession2taxid.gz > {directory}/dumps/prot.accession2taxid')
-    print('Unzipping prot.accession2taxid.gz')
-    subprocess.run(f'gunzip -c {directory}/dumps/prot.accession2taxid.gz > {directory}/dumps/prot.accession2taxid', shell=True, text=True, capture_output=True)
     #os.system(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz')
-    print('Untarring new_taxdump.tar.gz')
-    subprocess.run(f'tar -C {directory}/dumps -xzf {directory}/dumps/new_taxdump.tar.gz', shell=True, text=True, capture_output=True)
-    build_trie(directory)
 
     
 def update():
