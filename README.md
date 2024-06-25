@@ -24,7 +24,7 @@ from MRItaxonomy import taxid2name
 ```
 
 ### NCBI_fetch
-functions to intially set up and update the NCBI data pulls. The initialize() command is automatically run after pip installation. This does not have to be done again
+functions to intially set up and update the NCBI data pulls. The initialize() command is automatically the first time the databases are accessed. This does not have to be done again
 ```
 from MRItaxonomy import NCBI_fetch
 NCBI_fetch.initialize()

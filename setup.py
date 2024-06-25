@@ -1,14 +1,4 @@
-import atexit
 from setuptools import setup, find_packages
-from setuptools.command.install import install
-
-class PostInstallCommand(install):
-    def run(self):
-        install.run(self)
-        def _post_install():
-            from MRItaxonomy import NCBI_fetch
-            NCBI_fetch.initialize()
-        atexit.register(_post_install)
 
 setup(
     name="MRItaxonomy",
@@ -18,9 +8,6 @@ setup(
                       'biopython>=1.7',
                       'wget>=3.2',
                       'marisa_trie>=1.1.0'],
-    cmdclass={
-        'install': PostInstallCommand,
-    },
     author="MRIGlobal Bioinformatics Team",
     author_email="biofx@mriglobal.org",
     keywords="mriglobal taxonomy ncbi",
