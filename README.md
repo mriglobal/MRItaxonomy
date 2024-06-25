@@ -24,12 +24,12 @@ from MRItaxonomy import taxid2name
 ```
 
 ### NCBI_fetch
-functions to intially set up and update the NCBI data pulls. running initialize() once after pip installation is reccomended as this step is time consuming up front, but does not have to be done again unless updating is desired
+functions to intially set up and update the NCBI data pulls. The initialize() command is automatically run after pip installation. This does not have to be done again
 ```
 from MRItaxonomy import NCBI_fetch
 NCBI_fetch.initialize()
 ```
-to re-pull the latest from NCBI (will not re-download if no change)
+To update, re-pull the latest from NCBI (will not re-download if no change) using the update() command
 ```
 NCBI_fetch.update()
 ```
