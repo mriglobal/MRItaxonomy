@@ -77,9 +77,9 @@ this module handles operations having to do with the taxonomic trees via the NCB
 from MRItaxonomy import taxid
 taxid.load_dbs()    # note: does not have to be called. will automatically be applied the first time another MRItaxonomy.taxid() function needs the databases
 
-taxid.get_parent(taxid)    # returns the parent taxid for the given taxid
+taxid.getparent(taxid)    # returns the parent taxid for the given taxid
 
-taxid.get_rank(taixd)    # returns the rank of the given taxid (superkingdom, kingdom, phylum, class, order, family, genus, species)
+taxid.getrank(taixd)    # returns the rank of the given taxid (superkingdom, kingdom, phylum, class, order, family, genus, species)
 
 taxid.getnodeatrank(taxid, selected rank)    # returns the taxid at the taxonomic rank (superkingdom, kingdom, phylum, class, order, family, genus, species) for the given taxid
 
